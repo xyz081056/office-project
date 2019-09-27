@@ -29,19 +29,16 @@ export default new Router({
           path: '/home/department',
           name: '部门管理',
           component: Department,
-          // hidden: true
         },
         {
           path: '/home/branch',
           name: '机构管理',
           component: Branch,
-          // hidden: true
         },
         {
           path: '/home/employee',
           name: '员工管理',
           component: Employee,
-          // hidden: true
         },
 
       ]

@@ -1,6 +1,6 @@
 <template>
   <div class="messageBox">
-    <h1>信箱</h1>
+    <h1 style="font-size:30px">信箱</h1>
     <hr width="85%">
       <el-main>
           <!-- 信箱进入展示图 -->
@@ -109,7 +109,7 @@
               </el-form>
               </fieldset>
               <div slot="footer" class="dialog-footer" align="center">
-                <el-button @click="dialogMessageDetail = false">关 闭</el-button>
+                <el-button @click="updata">关 闭</el-button>
               </div>
         </el-dialog>
         </el-dialog>
@@ -167,7 +167,6 @@
                           <el-input
                           type="textarea"
                           :rows="5"
-                          placeholder="请输入具体消息内容"
                           v-model="messageDetail.content"
                           disabled>
                       </el-input>
@@ -191,7 +190,7 @@
               </el-form>
               </fieldset>
               <div slot="footer" class="dialog-footer" align="center">
-                <el-button @click="updata">关 闭</el-button>
+                <el-button @click="dialogSendedMessageDetail = false">关 闭</el-button>
               </div>
           </el-dialog>
         </el-dialog>
@@ -237,7 +236,7 @@
         dialogSendedVisible: false,//已发送的弹出框 
         dialogMessageDetail: false,//收件箱点击列出的表格后详细信息弹出框 
         dialogSendedMessageDetail: false,//点击已发送出现消息详情弹出框
-        newMessgae: true,
+        newMessage: true,
         multipleSelection: [],//用来要删除的数据的数组
         
       }
@@ -251,14 +250,17 @@
     methods: {
     // 获取邮箱数据
       getAllInboxInfo(){
-        this.postRequest('/myoffice/message/countMessage',{}).then(resp => {
+        var datas = {
+          "count":0
+        }
+        this.postRequest('/myoffice/message/countMessage',datas).then(resp => {
           this.mailBox[0].fileNum = resp.data.obj.listCount
         })
         this.postRequest('/myoffice/message/countNoRead',{}).then(resp => {
           this.mailBox[0].noReadFile = resp.data.obj.listCount
-          console.log(resp.data.obj)
+          // console.log(resp.data.obj)
         })
-        this.postRequest('/myoffice/message/countAlreadyPublish',{}).then(resp => {
+        this.postRequest('/myoffice/message/countAlreadyPublish',datas).then(resp => {
           this.mailBox[2].fileNum = resp.data.obj.listCount
         })
       },
@@ -292,6 +294,7 @@
         var _this = this
         _this.dialogMessageDetail = true
         _this.messageDetail = row
+        // console.log(_this.messageDetail)
         for (let i = 0; i < _this.inboxInfo.length; i++) {
           if (_this.inboxInfo[i].id === row.id) {
             _this.inboxInfo[i].newMessage = ''
@@ -321,10 +324,18 @@
           for (var i = 0; i < this.multipleSelection.length; i++) {
               ids.push(this.multipleSelection[i].messageId)
               }
-              var datas ={
+          var datas ={
                 "messageIds":ids
             }
-            // console.log(datas)
+            // console.log(datas.messageIds.length)
+          var counts ={
+              "count":datas.messageIds.length
+          }
+          console.log(count)
+        // 更新文件个数
+          this.postRequest('/myoffice/message/countMessage',counts).then(resp => {
+            this.mailBox[0].fileNum = resp.data.obj.listCount
+          })
         // 该部分是将数据从服务器删除，并且刷新桌面
         this.deleteRequest('/myoffice/message/deleteByMessageId', datas).then(resp => {
             this.tableLoading = false
@@ -335,7 +346,7 @@
             })
             }).catch(() => {})
          },
-    // 删除发件箱消息
+    // 删除已发送消息
       deleteSendedMessage() {
         //该部分是在页面提示删除多少条数据
         this.$confirm('此操作将删除[' + this.multipleSelection.length + ']条数据, 是否继续?', '提示', {
@@ -350,6 +361,14 @@
           var datas ={
           "messageIds":ids
         }
+        var counts ={
+              "count":datas.messageIds.length
+          }
+          console.log(count)
+        // 更新文件个数
+          this.postRequest('/myoffice/message/countAlreadyPublish',counts).then(resp => {
+            this.mailBox[2].fileNum = resp.data.obj.listCount
+          })
         // console.log(datas)
         // 该部分是将数据从服务器删除，并且刷新桌面
           this.deleteRequest('/myoffice/message/deleteByMessageId', datas).then(resp => {
@@ -363,16 +382,14 @@
       },
       // 看完以后更新页面数据
       updata(){
-        dialogSendedMessageDetail = false
+        this.dialogMessageDetail = false
+        console.log(this.messageDetail.id)
         var datas = {
-
+          "id":this.messageDetail.id
         }
         this.postRequest('/myoffice/message/updateRead',datas).then(resp => {
           if (resp.data && resp.data.status === 200) {
-            this.$message({
-            type: 'success',
-            message: `已阅读具体消息内容！`
-            });
+            this.getAllInboxInfo()
           }
         })
       },
@@ -394,6 +411,6 @@
    color: red
  }
  .el-textarea__inner{
-   width: 340%;
+   width: 280%;
  }
 </style>

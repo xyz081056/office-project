@@ -126,6 +126,10 @@
                           <i class="el-icon-pie-chart"></i>
                           <span>考勤管理</span>
                       </template>
+                      <el-menu-item index="">
+                          <i class="el-icon-notebook-2"></i>
+                          <span>员工签到、签退</span>
+                        </el-menu-item>
                         <el-menu-item index="">
                           <i class="el-icon-notebook-2"></i>
                           <span>考勤统计</span>

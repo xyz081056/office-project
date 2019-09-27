@@ -3,7 +3,7 @@
         <!--布局方法一、element-ui的Layout布局 即el-row和el-col布局 -->
         <!-- 布局方法二、自己用div布局，该页面所用方法-->
         <!-- 消息管理标题 -->
-        <h1 style="font-size:30px ">消息管理</h1>
+        <h1 style="font-size:30px">消息管理</h1>
         <hr width="90%"/>
         <!-- 在element-ui中默认居中对齐，通过修改align的值让其靠左或者靠右 -->
         <!-- 消息管理头部 -->
@@ -680,4 +680,7 @@
       border:1px solid black;
       border-radius: 10px
   } 
+  .el-textarea__inner{
+      width: 100%
+  }
   </style>
