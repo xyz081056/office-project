@@ -126,20 +126,24 @@
                           <i class="el-icon-pie-chart"></i>
                           <span>考勤管理</span>
                       </template>
-                      <el-menu-item index="">
+                      <el-menu-item index="/home/SignInAndSignOut">
                           <i class="el-icon-notebook-2"></i>
                           <span>员工签到、签退</span>
                         </el-menu-item>
-                        <el-menu-item index="">
+                        <el-menu-item index="/home/historicalQuery">
+                          <i class="el-icon-notebook-2"></i>
+                          <span>考勤历史查询</span>
+                        </el-menu-item>
+                        <el-menu-item index="/home/attendanceStatistic">
                           <i class="el-icon-notebook-2"></i>
                           <span>考勤统计</span>
                         </el-menu-item>
-                        <el-menu-item index="">
-                          <i class="el-icon-notebook-2"></i>
-                          <span>考勤历史记录查询</span>
-                        </el-menu-item>
                     </el-submenu>
               </el-menu-item-group>
+              <el-menu-item index="/home/test">
+                <i class="el-icon-notebook-2"></i>
+                <span>测试</span>
+              </el-menu-item>
             </el-menu>
             <!-- 插值表达式循环左侧菜单 -->
              <!-- <el-menu unique-opened router>

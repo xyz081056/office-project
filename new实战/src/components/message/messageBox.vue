@@ -119,7 +119,7 @@
             <el-table-column type="selection"></el-table-column>
             <el-table-column prop="name" label="收件人" width="150px" align="center">
                 <template slot-scope="scope">
-                    <span @click="showSendedMessageDetail(scope.row)" style="cursor:pointer">{{scope.row.name}}</span>
+                    <span @click="showSendedMessageDetail(scope.row)" style="cursor:pointer">{{scope.row.username}}</span>
                 </template>
             </el-table-column>
             <el-table-column prop="title" label="主题" width="250px" align="center">
@@ -294,6 +294,7 @@
         var _this = this
         _this.dialogMessageDetail = true
         _this.messageDetail = row
+        row.$style.color= "red"
         // console.log(_this.messageDetail)
         for (let i = 0; i < _this.inboxInfo.length; i++) {
           if (_this.inboxInfo[i].id === row.id) {

@@ -219,7 +219,6 @@
                                       <el-option
                                       v-for="item in branchNames"
                                       :key="item.value"
-                                      :lable="item.branchId"
                                       :value="item.branchName">
                                       </el-option>
                                   </el-select>
@@ -230,12 +229,10 @@
                                   <el-select v-model="message.departName"
                                    v-if="message.value!=''"
                                    :disabled=byDepart
-                                   v-on:change="getDepart($event)"
                                    placeholder="请选择部门">
                                       <el-option
                                       v-for="item in departNames"
                                       :key="item.value"
-                                      :lable="item.departId"
                                       :value="item.departName">
                                       </el-option>
                                   </el-select>
@@ -294,10 +291,8 @@
   export default {
       data(){//组件的数据必须是一个function方法，且必须有返回值即return
           return{
-              ifadd:'',
-              dataRange:'',
-              beginTime:'',//开始时间
-              endTime:'',//结束时间
+              ifadd:'',//通过给ifadd赋值，来判断是添加还是修改从而给后端传值
+              dataRange:'',//存放日期范围
               radio1:'',//第一组单选框
               checkbox:[],//复选框
               dialogTitle:'',//存放对话框标题
@@ -333,13 +328,36 @@
                   value: '紧急消息',
               }],
               // 机构下拉框
-              branchNames:[],
+              branchNames:[
+                {branchName:'华北电力科学研究院'},
+                {branchName:'中国科学院声学研究所'},
+                {branchName:'北大青鸟集团'},
+              ],
+              //用来存放所有部门
+              allDepart:[
+                {branchName:'华北电力科学研究院',departName:'华北电力1'},{branchName:'华北电力科学研究院',departName:'华北电力2'},
+                {branchName:'中国科学院声学研究所',departName:'声学研究所1'},{branchName:'中国科学院声学研究所',departName:'声学研究所2'},
+                {branchName:'北大青鸟集团',departName:'青鸟集团1'},{branchName:'北大青鸟集团',departName:'青鸟集团2'},
+              ],
               // 部门下拉框
               departNames:[],
             //   filter:[]
               }
           },
           methods:{
+            //   下拉框联动方法
+            getBranch(val){
+                console.log(val)
+                let part=[]
+                for (var a of this.allDepart){
+                // console.log(a)
+                if(val===a.branchName){
+                    part.push({departName: a.departName})
+                    console.log(part)
+                    }
+                    this.departNames = part
+                }
+            },
               // 获取桌面所有信息
               getMessageInfo() {
                   this.postRequest('/myoffice/message/search',{}).then(res => {
@@ -417,8 +435,6 @@
               },
               // 添加和修改功能
               addMessage(){
-                  console.log(this.message)
-                  console.log(this.ifadd)
                 //   如果iffadd = 1 表示添加
                   if(this.ifadd === 1){
                   this.postRequest('/myoffice/message/addMessage',this.message).then(res => {
@@ -495,7 +511,6 @@
                   this.dialogTitle = "修改新消息";
                   this.byEdit = true;
                   this.ifadd = 2
-                //   console.log(this.ifadd)
                   this.message.messageId = row.messageId
                   this.message.title = row.title
                   this.message.messageTypeName = row.messageTypeName
@@ -533,26 +548,26 @@
                       }
                  })
               },
-              //   获取机构
-              getBranch(){
-                this.postRequest('/myoffice/message/listBranch',{}).then(res => {
-                      if (res && res.status == 200) {
-                        // console.log('机构',res)
-                        this.branchNames = res.data.obj.branchList
-                        // console.log(this.branchNames)
-                      }
-                 })
-              },
-            //   获取部门
-              getDepart(){
-                this.postRequest('/myoffice/message/listDepart',{}).then(res => {
-                      if (res && res.status == 200) {
-                        // console.log('部门',res)
-                        this.departNames = res.data.obj.departList
-                        // console.log(this.departNames)
-                      }
-                 })
-              },
+            //   //   获取机构
+            //   getBranch(){
+            //     this.postRequest('/myoffice/message/listBranch',{}).then(res => {
+            //           if (res && res.status == 200) {
+            //             // console.log('机构',res)
+            //             this.branchNames = res.data.obj.branchList
+            //             // console.log(this.branchNames)
+            //           }
+            //      })
+            //   },
+            // //   获取部门
+            //   getDepart(){
+            //     this.postRequest('/myoffice/message/listDepart',{}).then(res => {
+            //           if (res && res.status == 200) {
+            //             // console.log('部门',res)
+            //             this.departNames = res.data.obj.departList
+            //             // console.log(this.departNames)
+            //           }
+            //      })
+            //   },
             //   获取员工姓名
               getName(){
                 this.postRequest('/myoffice/message/listUser',{}).then(res => {
@@ -582,9 +597,9 @@
           // 生命周期函数用于加载数据，使其在桌面展示出来
           created(){
               this.getMessageInfo() 
-              this.getBranch()
-              this.getDepart()
-              this.getName()
+            //   this.getBranch()
+            //   this.getDepart()
+            //   this.getName()
           },
           mounted(){
             this.restaurants = this.getName()
@@ -620,7 +635,6 @@
   .header .header-right{
       height: 80px;
       line-height: 80px;
-  
       flex: 5
   }
   .header .header-right button{
